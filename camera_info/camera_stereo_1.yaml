@@ -1,0 +1,28 @@
+%YAML:1.0
+
+image_width: 1920
+image_height: 1080
+FOV_H: 68
+FOV_V: 41
+camera_name: arm_cam_1
+distortion_model: plumb_bob
+camera_matrix_left:
+  rows: 3
+  cols: 3
+  data: [1417.81874, 0.000000, 963.27460, 0.000000, 1418.16012, 538.66701, 0.000000, 0.000000, 1.000000]
+distortion_coefficients_left:
+  rows: 1
+  cols: 5
+  data: [-0.04901, 0.11361, -0.00112, 0.00202, 0.000000]
+camera_matrix_right:
+  rows: 3
+  cols: 3
+  data: [1420.49702, 0.000000, 962.12664, 0.000000, 1421.02544, 540.94687, 0.000000, 0.000000, 1.000000]
+distortion_coefficients_right:
+  rows: 1
+  cols: 5
+  data: [-0.04749, 0.09730, 0.00045, 0.00186, 0.000000]
+extrinsic_matrix_Mrl:
+  rows: 4
+  cols: 4
+  data: [1.0000, -0.0010 , -0.0032, -120.1441, 0.0010, 1.0000, 0.0010,  0.2167, 0.0033,-0.0010,1.0000,-0.7724,0,0,0,1]
