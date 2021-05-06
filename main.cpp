@@ -20,13 +20,16 @@ int main() {
     stereo_vision::ParamLoader paramLoader("/home/vickylzy/CLionProjects/stereo_vision/camera_info/camera_stereo_1.yaml");
     paramLoader.show_info();
     stereo_vision::StereoConstructor stereoConstructor(paramLoader);
-    stereoConstructor.onInit();
+    stereoConstructor.onInit(13,78,80);
 
 //    string img1_filename = "/home/vickylzy/Pictures/imgL.jpg";
 //    string img2_filename = "/home/vickylzy/Pictures/imgR.jpg";
 
-    string img1_filename = "/home/vickylzy/CLionProjects/stereo_vision/data/imgL.jpg";
-    string img2_filename = "/home/vickylzy/CLionProjects/stereo_vision/data/imgR.jpg";
+    string img1_filename = "/home/vickylzy/Documents/space_station_arm/20201214机械臂腕部相机（正样）力学试验后外参第二次测试/腕部301a/L500.bmp";
+    string img2_filename = "/home/vickylzy/Documents/space_station_arm/20201214机械臂腕部相机（正样）力学试验后外参第二次测试/腕部301a/R500.bmp";
+
+//    string img1_filename = "/home/vickylzy/CLionProjects/stereo_vision/data/imgL.jpg";
+//    string img2_filename = "/home/vickylzy/CLionProjects/stereo_vision/data/imgR.jpg";
 
 //    cv::Mat im1 = cv::imread(img1_filename,cv::IMREAD_COLOR);
 //    cv::Mat im2 = cv::imread(img2_filename,cv::IMREAD_COLOR);

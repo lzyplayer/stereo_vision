@@ -12,9 +12,11 @@
 #include "opencv2/imgcodecs.hpp"
 #include "opencv2/highgui.hpp"
 #include "opencv2/core/utility.hpp"
-#include "param_loader.h"
 #include <stdio.h>
 #include <sstream>
+
+#include "param_loader.h"
+#include "showHorizion.hpp"
 
 using namespace cv;
 
@@ -210,7 +212,11 @@ int main(int argc, char** argv)
     Mat img1r, img2r;
     remap(img1, img1r, map11, map12, INTER_LINEAR);
     remap(img2, img2r, map21, map22, INTER_LINEAR);
+    //check recitify
 
+    stereo_vision::showRecitifyResult(img1r,img2r);
+    stereo_vision::showRecitifyResult(img1,img2);
+//    switch rectify
 //    img1 = img1r;
 //    img2 = img2r;
 //    }

@@ -22,9 +22,9 @@ namespace stereo_vision {
 
     class StereoConstructor {
     public:
-        void onInit();
+        void onInit(int SADWindowSize = 13,int minDisparity = 96,int numberOfDisparities = 48);
         int compute_match(const Mat& im_l,const Mat& im_r);
-        explicit StereoConstructor(const ParamLoader &param);
+        explicit StereoConstructor(ParamLoader param);
 
     private:
         ParamLoader param;

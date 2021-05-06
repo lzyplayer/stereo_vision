@@ -3,44 +3,37 @@
 //
 
 #include "stereo_constructor.h"
+#include "showHorizion.hpp"
+#include <utility>
 
 namespace stereo_vision {
 
-    StereoConstructor::StereoConstructor(const ParamLoader &param) : param(param) {}
 
-    void StereoConstructor::onInit() {
+    StereoConstructor::StereoConstructor(ParamLoader param) : param(std::move(param)) {}
 
-        int SADWindowSize = 5;  //need modify!!! block size
-        int numberOfDisparities = 16; //need modify!!! max-disparity
+    void StereoConstructor::onInit(int SADWindowSize ,int minDisparity ,int numberOfDisparities) {
+
+        sgbm = StereoSGBM::create(0,16,3);
 
         if ( numberOfDisparities < 1 || numberOfDisparities % 16 != 0 )
         {
             printf(" The max disparity (--maxdisparity=<...>) must be a positive integer divisible by 16\n");
             throw;
         }
-        int width =1920;
-        numberOfDisparities = numberOfDisparities > 0 ? numberOfDisparities : ((width/8) + 15) & -16;
-
         if (SADWindowSize < 1 || SADWindowSize % 2 != 1)
         {
-            printf("Command-line parameter error: The block size (--blocksize=<...>) must be a positive odd number\n");
+            printf(" parameter error: The block size (--blocksize=<...>) must be a positive odd number\n");
             throw;
         }
-
-        sgbm = StereoSGBM::create(0,16,3);
-        sgbm->setPreFilterCap(63);
-        int sgbmWinSize = SADWindowSize > 0 ? SADWindowSize : 3;
-        sgbm->setBlockSize(sgbmWinSize);
-        int cn = 1; // 3 channels
-        sgbm->setP1(8*cn*sgbmWinSize*sgbmWinSize);
-        sgbm->setP2(32*cn*sgbmWinSize*sgbmWinSize);
-        sgbm->setMinDisparity(0);
+        //para set
+        sgbm->setPreFilterCap(1);
+        sgbm->setBlockSize(SADWindowSize);
+        sgbm->setMinDisparity(minDisparity);
         sgbm->setNumDisparities(numberOfDisparities);
-        sgbm->setUniquenessRatio(10);
         sgbm->setSpeckleWindowSize(100);
         sgbm->setSpeckleRange(32);
         sgbm->setDisp12MaxDiff(1);
-
+        sgbm->setUniquenessRatio(10);
 //        sgbm->setMode(StereoSGBM::MODE_HH);
         sgbm->setMode(StereoSGBM::MODE_SGBM);
 
@@ -64,12 +57,10 @@ namespace stereo_vision {
     int StereoConstructor::compute_match(const Mat &im_l, const Mat &im_r) {
 
         int64 t = getTickCount();
-
-        //para set
-        int numberOfDisparities = 16; //need modify!!! max-disparity
-        numberOfDisparities = numberOfDisparities > 0 ? numberOfDisparities : ((im_l.cols/8) + 15) & -16;
-        sgbm->setNumDisparities(numberOfDisparities);
-
+        int cn = im_l.channels(); // 3 channels
+        int sgbmWinSize = sgbm->getBlockSize();
+        sgbm->setP1(8*cn*sgbmWinSize*sgbmWinSize);
+        sgbm->setP2(32*cn*sgbmWinSize*sgbmWinSize);
 
         Size img_size = im_l.size();
         Rect roi1, roi2;
@@ -91,18 +82,19 @@ namespace stereo_vision {
 
         //compute
         Mat disp, disp8;
-//        sgbm->compute(img1r, img2r, disp);
-        sgbm->compute(im_l, im_r, disp);
-//
+        sgbm->compute(img1r, img2r, disp);
+        showRecitifyResult(img1r,img2r);
+//        sgbm->compute(im_l, im_r, disp);
+//        showRecitifyResult(im_l,im_r);
 
+//
         t = getTickCount() - t;
         printf("Time elapsed: %fms\n", t*1000/getTickFrequency());
 
+        Mat normalized_im;
+        normalize(disp, normalized_im, 0, 255, CV_MINMAX, CV_8UC1);
 
-        disp.convertTo(disp8, CV_8U);
-
-
-        imwrite("disparity_im.png",  disp8 );
+        imwrite("disparity_im.png",  normalized_im );
 
         //save pointcloud
         Mat xyz;

@@ -19,3 +19,8 @@ add_executable(stereo_vision_example sample_main.cpp src/param_loader.cpp)
 target_link_libraries(stereo_vision_example
         ${OpenCV_LIBRARIES}
         )
+
+#add_executable(stereo_vision_example_gpu sample_main_gpu.cpp)
+#target_link_libraries(stereo_vision_example_gpu
+#        ${OpenCV_LIBRARIES}
+#        )
