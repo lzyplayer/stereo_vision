@@ -10,6 +10,8 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/core/utility.hpp>
+#include <pcl/point_cloud.h>
+#include <pcl/point_types.h>
 #include "param_loader.h"
 
 
@@ -23,7 +25,7 @@ namespace stereo_vision {
     class StereoConstructor {
     public:
         void onInit(int SADWindowSize = 13,int minDisparity = 96,int numberOfDisparities = 48);
-        int compute_match(const Mat& im_l,const Mat& im_r);
+        int compute_match(const Mat& im_l,const Mat& im_r,pcl::PointCloud<pcl::PointXYZ>::Ptr& pc_stereovision);
         explicit StereoConstructor(ParamLoader param);
 
     private:

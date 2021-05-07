@@ -4,6 +4,7 @@
 
 #include "stereo_constructor.h"
 #include "showHorizion.hpp"
+#include "pcl_cv_conversion.hpp"
 #include <utility>
 
 namespace stereo_vision {
@@ -54,7 +55,7 @@ namespace stereo_vision {
         }
         fclose(fp);
     }
-    int StereoConstructor::compute_match(const Mat &im_l, const Mat &im_r) {
+    int StereoConstructor::compute_match(const Mat &im_l, const Mat &im_r ,pcl::PointCloud<pcl::PointXYZ>::Ptr& pc_stereovision) {
 
         int64 t = getTickCount();
         int cn = im_l.channels(); // 3 channels
@@ -83,7 +84,7 @@ namespace stereo_vision {
         //compute
         Mat disp, disp8;
         sgbm->compute(img1r, img2r, disp);
-//        showRecitifyResult(img1r,img2r);
+        showRecitifyResult(img1r,img2r);
 //        sgbm->compute(im_l, im_r, disp);
 //        showRecitifyResult(im_l,im_r);
 
@@ -107,6 +108,7 @@ namespace stereo_vision {
         reprojectImageTo3D(floatDisp, xyz, Q, true);
         saveXYZ("cloud.xyz", xyz);
 
+        pc_stereovision = MatToPoinXYZ(xyz);
 
 
     return 0;
