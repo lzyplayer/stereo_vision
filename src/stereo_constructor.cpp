@@ -83,7 +83,7 @@ namespace stereo_vision {
         //compute
         Mat disp, disp8;
         sgbm->compute(img1r, img2r, disp);
-        showRecitifyResult(img1r,img2r);
+//        showRecitifyResult(img1r,img2r);
 //        sgbm->compute(im_l, im_r, disp);
 //        showRecitifyResult(im_l,im_r);
 
@@ -104,7 +104,7 @@ namespace stereo_vision {
             disparity_multiplier = 16.0f;
 
         disp.convertTo(floatDisp, CV_32F, 1.0f / disparity_multiplier);
-        reprojectImageTo3D(floatDisp, xyz, Q, false);
+        reprojectImageTo3D(floatDisp, xyz, Q, true);
         saveXYZ("cloud.xyz", xyz);
 
 

@@ -16,17 +16,18 @@ std::string getPathName(const char *fifopath)
 
 int main() {
     std::cout << "Hello, World!" << std::endl;
-
-    stereo_vision::ParamLoader paramLoader("/home/vickylzy/CLionProjects/stereo_vision/camera_info/camera_stereo_1.yaml");
+//
+    stereo_vision::ParamLoader paramLoader("/home/vickylzy/CLionProjects/stereo_vision/camera_info/camera_stereo_1_matlab.yaml");
+//    stereo_vision::ParamLoader paramLoader("/home/vickylzy/CLionProjects/stereo_vision/camera_info/camera_stereo_1.yaml");
     paramLoader.show_info();
     stereo_vision::StereoConstructor stereoConstructor(paramLoader);
-    stereoConstructor.onInit(13,78,80);
+    stereoConstructor.onInit(13,128,32);
 
 //    string img1_filename = "/home/vickylzy/Pictures/imgL.jpg";
 //    string img2_filename = "/home/vickylzy/Pictures/imgR.jpg";
 
-    string img1_filename = "/home/vickylzy/Documents/space_station_arm/20201214机械臂腕部相机（正样）力学试验后外参第二次测试/腕部301a/L500.bmp";
-    string img2_filename = "/home/vickylzy/Documents/space_station_arm/20201214机械臂腕部相机（正样）力学试验后外参第二次测试/腕部301a/R500.bmp";
+    string img1_filename = "/home/vickylzy/Documents/space_station_arm/test_image/left_back.png";
+    string img2_filename = "/home/vickylzy/Documents/space_station_arm/test_image/right_back.png";
 
 //    string img1_filename = "/home/vickylzy/CLionProjects/stereo_vision/data/imgL.jpg";
 //    string img2_filename = "/home/vickylzy/CLionProjects/stereo_vision/data/imgR.jpg";
