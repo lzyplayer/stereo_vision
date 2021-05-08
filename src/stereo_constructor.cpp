@@ -84,7 +84,7 @@ namespace stereo_vision {
         //compute
         Mat disp, disp8;
         sgbm->compute(img1r, img2r, disp);
-        showRecitifyResult(img1r,img2r);
+//        showRecitifyResult(img1r,img2r);
 //        sgbm->compute(im_l, im_r, disp);
 //        showRecitifyResult(im_l,im_r);
 
