@@ -32,8 +32,9 @@ int main() {
     stereo_vision::StereoConstructor stereoConstructor(paramLoader);
     stereoConstructor.onInit(13,128,32);
 
-//    string img1_filename = "/home/vickylzy/Pictures/imgL.jpg";
-//    string img2_filename = "/home/vickylzy/Pictures/imgR.jpg";
+    int block_size = 9;
+    int minDisparity = 128;
+    int numberOfDisparities = 32;
 
     string img1_filename = "/home/vickylzy/Documents/space_station_arm/test_image/left_back.png";
     string img2_filename = "/home/vickylzy/Documents/space_station_arm/test_image/right_back.png";
