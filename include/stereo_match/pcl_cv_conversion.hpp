@@ -10,7 +10,7 @@
 namespace stereo_vision{
 
 
-pcl::PointCloud<pcl::PointXYZ>::Ptr MatToPoinXYZ(cv::Mat OpencVPointCloud)
+pcl::PointCloud<pcl::PointXYZ>::Ptr MatToPoinXYZ(const cv::Mat &OpencVPointCloud, float scale)
 {
     /*
     *  Function: Get from a Mat to pcl pointcloud datatype
@@ -26,9 +26,9 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr MatToPoinXYZ(cv::Mat OpencVPointCloud)
         //std::cout<<i<<endl;
 
         pcl::PointXYZ point;
-        point.x = OpencVPointCloud.at<float>(0,i);
-        point.y = OpencVPointCloud.at<float>(1,i);
-        point.z = OpencVPointCloud.at<float>(2,i);
+        point.x = OpencVPointCloud.at<float>(0,i)*scale;
+        point.y = OpencVPointCloud.at<float>(1,i)*scale;
+        point.z = OpencVPointCloud.at<float>(2,i)*scale;
 
         // when color needs to be added:
         //uint32_t rgb = (static_cast<uint32_t>(pr) << 16 | static_cast<uint32_t>(pg) << 8 | static_cast<uint32_t>(pb));
@@ -44,7 +44,7 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr MatToPoinXYZ(cv::Mat OpencVPointCloud)
     return point_cloud_ptr;
 
 }
-    cv::Mat  PoinXYZToMat(pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud_ptr){
+    cv::Mat  PoinXYZToMat(const pcl::PointCloud<pcl::PointXYZ>::Ptr &point_cloud_ptr){
 
         cv::Mat OpenCVPointCloud(3, point_cloud_ptr->points.size(), CV_64FC1);
         for(int i=0; i < point_cloud_ptr->points.size();i++){
