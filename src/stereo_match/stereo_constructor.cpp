@@ -35,8 +35,8 @@ namespace stereo_vision {
         sgbm->setSpeckleRange(32);
         sgbm->setDisp12MaxDiff(1);
         sgbm->setUniquenessRatio(10);
-//        sgbm->setMode(StereoSGBM::MODE_HH);
-        sgbm->setMode(StereoSGBM::MODE_SGBM);
+        sgbm->setMode(StereoSGBM::MODE_HH);
+//        sgbm->setMode(StereoSGBM::MODE_SGBM);
 
     }
 
@@ -107,7 +107,7 @@ namespace stereo_vision {
         disp.convertTo(floatDisp, CV_32F, 1.0f / disparity_multiplier);
         reprojectImageTo3D(floatDisp, xyz, Q, true);
         saveXYZ("cloud.xyz", xyz);
-
+        //  precision
         pc_stereovision = MatToPoinXYZ(xyz);
 
 

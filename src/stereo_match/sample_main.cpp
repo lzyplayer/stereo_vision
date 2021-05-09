@@ -217,8 +217,8 @@ int main(int argc, char** argv)
     stereo_vision::showRecitifyResult(img1r,img2r);
     stereo_vision::showRecitifyResult(img1,img2);
 //    switch rectify
-//    img1 = img1r;
-//    img2 = img2r;
+    img1 = img1r;
+    img2 = img2r;
 //    }
 
     numberOfDisparities = numberOfDisparities > 0 ? numberOfDisparities : ((img_size.width/8) + 15) & -16;
