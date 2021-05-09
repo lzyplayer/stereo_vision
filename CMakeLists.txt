@@ -7,9 +7,12 @@ find_package(OpenCV 3 REQUIRED)
 
 find_package(PCL REQUIRED)
 
+set(EIGEN_INCLUDE_PATH "/usr/include/eigen3")
+
 include_directories(
         ${OpenCV_INCLUDE_DIRS}
         ${PCL_INCLUDE_DIRS}
+        ${EIGEN_INCLUDE_PATH}
         include)
 link_directories(${PCL_LIBRARY_DIRS})
 add_definitions(${PCL_DEFINITIONS})
@@ -20,7 +23,10 @@ message(STATUS "PCL_DEFINITIONS:" ${PCL_DEFINITIONS})
 
 message("${OpenCV_INCLUDE_DIRS}")
 
-add_executable(stereo_vision main.cpp src/stereo_match/param_loader.cpp src/stereo_match/stereo_constructor.cpp)
+add_executable(stereo_vision
+        main.cpp
+        src/stereo_match/param_loader.cpp
+        src/stereo_match/stereo_constructor.cpp)
 target_link_libraries(stereo_vision
         ${OpenCV_LIBRARIES}
         ${PCL_LIBRARIES}
