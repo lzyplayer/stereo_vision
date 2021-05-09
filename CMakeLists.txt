@@ -21,8 +21,6 @@ message(STATUS "PCL_INCLUDE_DIRS:" ${PCL_INCLUDE_DIRS})
 message(STATUS "PCL_LIBRARY_DIRS:" ${PCL_LIBRARY_DIRS})
 message(STATUS "PCL_DEFINITIONS:" ${PCL_DEFINITIONS})
 
-message("${OpenCV_INCLUDE_DIRS}")
-
 add_executable(stereo_vision
         main.cpp
         src/stereo_match/param_loader.cpp
@@ -36,7 +34,7 @@ add_executable(stereo_vision_online
         main_online.cpp
         src/stereo_match/param_loader.cpp
         src/stereo_match/stereo_constructor.cpp)
-target_link_libraries(stereo_vision
+target_link_libraries(stereo_vision_online
         ${OpenCV_LIBRARIES}
         ${PCL_LIBRARIES}
         )
