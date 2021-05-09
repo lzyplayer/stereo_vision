@@ -1,8 +1,10 @@
 //
 // Created by vickylzy on 2021/5/9.
 //
-
+#include <csignal>
 #include <iostream>
+#include <chrono>
+#include <thread>
 #include <Eigen/Dense>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
@@ -12,17 +14,31 @@
 //#include <pcl/filters/voxel_grid.h>
 //#include <pcl/registration/icp.h>
 //#include <boost/shared_ptr.hpp>
-
+#include <opencv2/core/utility.hpp>
 #include "stereo_match/stereo_constructor.h"
 #include "stereo_match/param_loader.h"
 #include "station_prarm_reader.hpp"
 #include "stereo_match/transform_utility.hpp"
+#include "stereo_match/transfer_info.hpp"
 
 using namespace std;
 
+namespace {
+
+    volatile std::sig_atomic_t camera_l_signal;
+    volatile std::sig_atomic_t camera_r_signal;
+
+}  // namespace
+
+
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    //camera signal declare
+
+    std::signal(SIGRTMIN+1, [](int s) { camera_l_signal = s; });
+    std::signal(SIGRTMIN+2, [](int s) { camera_r_signal = s; });
+    tran_info::clear_pidtxt();
+    tran_info::save_pidtxt();
 // init
     stereo_vision::ParamLoader paramLoader_l("../camera_info/camera_stereo_1.yaml");
     stereo_vision::ParamLoader paramLoader_r("../camera_info/camera_stereo_2.yaml");
@@ -39,12 +55,17 @@ int main() {
     stereoConstructor_b2.onInit(block_size, minDisparity, numberOfDisparities);
     stereo_vision::StereoConstructor* stereoConstructor_ptr;
 
-    // TODO: tell backend what image you need
 
     // endless loop !
     while (true){
+        // TODO: tell backend what image you need
+        tran_info::write_reqlist();
+        while (!camera_l_signal | !camera_r_signal){
+            // wait image arrived
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        }
         // read realtime param
-        std::vector<std::string> station_param = stereo_vision::getArgList(ARG_FETCH_BLOCK, "/dev/shm/c590/cacheA/", "data.txt");
+        std::vector<std::string> station_param = stereo_vision::getArgList(ARG_FETCH_BLOCK, tran_info::trans_dir_path, "data.txt");
         Eigen::Matrix4f arm_trans = stereo_vision::stationParam2rot(station_param);
         // choose arm end
         if (station_param[14]=="55")
@@ -54,15 +75,13 @@ int main() {
         else
             continue;
         //  get eigen transform
-        //  .........init transform
-        //
+        //  TODO: calculate initial transfrom  camleft->cam_install->F_ee
 
-        // TODO: read im backend provided
-        string img1_filename = "/home/vickylzy/Documents/space_station_arm/test_image/left_back.png";
-        string img2_filename = "/home/vickylzy/Documents/space_station_arm/test_image/right_back.png";
+        string img_left_filename(tran_info::im_cam0_path);
+        string img_right_filename(tran_info::im_cam1_path);
 
-        cv::Mat im1 = cv::imread(img1_filename,cv::IMREAD_GRAYSCALE);
-        cv::Mat im2 = cv::imread(img2_filename,cv::IMREAD_GRAYSCALE);
+        cv::Mat im1 = cv::imread(img_left_filename, cv::IMREAD_GRAYSCALE);
+        cv::Mat im2 = cv::imread(img_right_filename, cv::IMREAD_GRAYSCALE);
 
         pcl::PointCloud<pcl::PointXYZ>::Ptr cloudSource(new pcl::PointCloud<pcl::PointXYZ>);// uninitialized or initialized
         stereoConstructor_ptr->compute_match(im1, im2, cloudSource);

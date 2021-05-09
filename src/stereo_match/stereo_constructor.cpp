@@ -78,8 +78,8 @@ namespace stereo_vision {
         remap(im_l, img1r, map11, map12, INTER_LINEAR);
         remap(im_r, img2r, map21, map22, INTER_LINEAR);
 
-        imwrite("left_image_recitied.png",img1r);
-        imwrite("right_image_recitied.png",img2r);
+//        imwrite("left_image_recitied.png",img1r);
+//        imwrite("right_image_recitied.png",img2r);
 
         //compute
         Mat disp, disp8;
