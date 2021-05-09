@@ -12,15 +12,6 @@
 #include "stereo_match/param_loader.h"
 
 using namespace std;
-std::string getPathName(const char *fifopath)
-{
-    FILE *f = fopen(fifopath, "rb");
-    char b[FILENAME_MAX];
-    fread(b, FILENAME_MAX, 1, f);
-    fclose(f);
-    return std::string(b);
-}
-
 
 
 int main() {
