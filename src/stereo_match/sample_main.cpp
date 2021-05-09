@@ -15,8 +15,8 @@
 #include <stdio.h>
 #include <sstream>
 
-#include "param_loader.h"
-#include "showHorizion.hpp"
+#include "stereo_match/param_loader.h"
+#include "stereo_match/showHorizion.hpp"
 
 using namespace cv;
 

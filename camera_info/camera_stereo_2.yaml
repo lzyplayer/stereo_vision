@@ -6,30 +6,33 @@ FOV_H: 68
 FOV_V: 41
 camera_name: arm_cam_2
 distortion_model: plumb_bob
-camera_matrix_left:
+camera_matrix_left: !!opencv-matrix
   rows: 3
   cols: 3
   dt: d
   data: [1424.00376,0,966.954101,0,1424.36435,539.822691,0,0,1]
-distortion_coefficients_left:
+distortion_coefficients_left: !!opencv-matrix
   rows: 5
   cols: 1
   dt: d
   data: [-0.0407368782,0.0983416953,0,0,0]
-camera_matrix_right:
+camera_matrix_right: !!opencv-matrix
   rows: 3
   cols: 3
   dt: d
   data: [1426.99365,0,961.275702,0,1427.10923,539.832188,0,0,1]
-distortion_coefficients_right:
+distortion_coefficients_right: !!opencv-matrix
   rows: 5
   cols: 1
   dt: d
   data: [-0.0425658282,0.0963138527,0,0,0]
-extrinsic_matrix_Mrl:
-  rows: 4
-  cols: 4
+extrinsic_R_Mrl: !!opencv-matrix
+  rows: 3
+  cols: 3
   dt: d
-  data: [0.999998927,6.6396963e-07,0.00146509553,-120.080452,9.77097841e-07,0.999999373,-0.00112010853,0.448334086,-0.00146509536,0.00112010876,0.999998299,-0.374108563,0,0,0,1]
-
-
+  data: [0.999998927,6.6396963e-07,0.00146509553,9.77097841e-07,0.999999373,-0.00112010853,-0.00146509536,0.00112010876,0.999998299]
+extrinsic_T_Mrl: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [-120.080452,0.448334086,-0.374108563]
