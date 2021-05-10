@@ -1,3 +1,5 @@
 .idea
 cmake-build*
 *.pcd
+
+stereo_vision.zip

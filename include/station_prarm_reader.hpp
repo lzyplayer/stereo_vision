@@ -7,7 +7,7 @@
 #include <vector>
 #include <cstring>
 #include <unistd.h>
-#include <stdio.h>
+#include <cstdio>
 
 #define ARG_FETCH_BLOCK    1
 #define ARG_FETCH_NONBLOCK 0
@@ -22,7 +22,7 @@ namespace stereo_vision{
         FILE *f;
         char filepath[FILENAME_MAX];
         char *chk;
-        char *buf = (char*)malloc(ARG_LIST_LEN_MAX);
+        char *buf = (char*)calloc(ARG_LIST_LEN_MAX, 1);
         sprintf(filepath, "%s/%s", pathname, filename);
         CHK_FILE_LABEL:
         while (true) {

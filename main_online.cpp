@@ -68,12 +68,14 @@ int main() {
         std::vector<std::string> station_param = stereo_vision::getArgList(ARG_FETCH_BLOCK, tran_info::trans_dir_path, "data.txt");
         Eigen::Matrix4f arm_trans = stereo_vision::stationParam2rot(station_param);
         // choose arm end
-        if (station_param[14]=="55")
+        if (stoi(station_param[14]) == 85)
             stereoConstructor_ptr = &stereoConstructor_a1;
-        else if (station_param[14]=="AA")
+        else if (stoi(station_param[14]) == 170)
             stereoConstructor_ptr = &stereoConstructor_b2;
-        else
+        else{
+            perror("unknown arm end");
             continue;
+        }
         //  get eigen transform
         //  TODO: calculate initial transfrom  camleft->cam_install->F_ee
 

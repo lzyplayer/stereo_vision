@@ -93,8 +93,11 @@ namespace stereo_vision {
         printf("Time elapsed: %fms\n", t*1000/getTickFrequency());
 
         Mat normalized_im;
+#if  (CV_MAJOR_VERSION == 4)
+        normalize(disp, normalized_im, 0, 255, NORM_MINMAX, CV_8UC1);
+#else
         normalize(disp, normalized_im, 0, 255, CV_MINMAX, CV_8UC1);
-
+#endif
         imwrite("disparity_im.png",  normalized_im );
 
         //save pointcloud

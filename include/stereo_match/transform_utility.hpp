@@ -57,6 +57,7 @@ inline double angleBetweenVectors(Eigen::Vector3f &a, Eigen::Vector3f &b) {
             * AngleAxisf(pitch/180*M_PI, Vector3f::UnitY())
             * AngleAxisf(roll/180*M_PI, Vector3f::UnitX());
         trans.block(0,0,3,3) = Rot;
+        return trans;
     }
 
 Eigen::Vector3d calculate_err_R(const Eigen::Matrix4d &GroundTruth, const Eigen::Matrix4d &sample) {
