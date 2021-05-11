@@ -22,6 +22,9 @@ namespace stereo_vision {
         voxelGrid.setInputCloud(clear_cloud);
         voxelGrid.filter(*localmap_cloud);
         kdtree.setInputCloud(localmap_cloud);
+        icp.setMaxCorrespondenceDistance(0.2);
+        icp.setRANSACOutlierRejectionThreshold(0.02);
+        icp.setMaximumIterations(50);
         // register
     };
 
@@ -37,7 +40,7 @@ namespace stereo_vision {
         std::vector<float> pointRadiusSquaredDistance;
         pcl::PointCloud<pcl::PointXYZ>::Ptr cloest_cloud(new pcl::PointCloud<pcl::PointXYZ>());
         pcl::PointXYZ search_point(init_motion(0,3),init_motion(1,3),init_motion(2,3));
-        if ( kdtree.radiusSearch (search_point, 8, pointIdxRadiusSearch, pointRadiusSquaredDistance) > 0 )
+        if ( kdtree.radiusSearch (search_point, 3, pointIdxRadiusSearch, pointRadiusSquaredDistance) > 0 )
         {
             for (int i : pointIdxRadiusSearch) {
                 pcl::PointXYZ p  = localmap_cloud->points[i];
@@ -54,6 +57,10 @@ namespace stereo_vision {
         icp.align(result_cloud, init_motion); //,curr_pose
 
         double fitness_score = icp.getFitnessScore();
+        result_motion = icp.getFinalTransformation();
+        std::cout << "fitness score:  " << fitness_score << std::endl;
+        std::cout << "init_motion:  " << init_motion << std::endl;
+        std::cout << "result_motion:  " << result_motion << std::endl;
         std::cout << "fitness score:  " << fitness_score << std::endl;
         result_motion = icp.getFinalTransformation();
         return 0;

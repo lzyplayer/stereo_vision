@@ -49,11 +49,11 @@ int main() {
 
     int block_size = 9;
     int minDisparity = 128;
-    int numberOfDisparities = 32;
+    int numberOfDisparities = 64;
 
     stereoConstructor_a1.onInit(block_size, minDisparity, numberOfDisparities);
     stereoConstructor_b2.onInit(block_size, minDisparity, numberOfDisparities);
-    stereo_vision::Register pc_register("CLOUD_PATH");
+    stereo_vision::Register pc_register("/home/vickylzy/Documents/space_station_arm/data_once/point_cloud_body_real.pcd");
     stereo_vision::StereoConstructor *stereoConstructor_ptr;
     stereo_vision::ParamLoader *paramLoader_ptr;
 

@@ -18,7 +18,7 @@ namespace tran_info {
     const char *pid_txt_path = "/dev/shm/c590/cacheA/pid.txt";
     const char *req_list_path = "/dev/shm/c590/cacheA/req.list";
     const char *im_cam0_path = "/dev/shm/c590/cacheA/cam0.jepg";
-    const char *im_cam1_path = "/dev/shm/c590/cacheA/cam1.jepg";
+    const char *im_cam1_path = "/dev/shm/c590/cacheA/cam1.jpeg";
 
     inline bool check_exist(const std::string &name) {
         std::ifstream f(name.c_str());

@@ -44,7 +44,6 @@ int main() {
 
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloudSource(new pcl::PointCloud<pcl::PointXYZ>);// uninitialized or initialized
     stereoConstructor.compute_match(im1, im2, cloudSource);
-    1==1;
 
     /**
      *  registration here
