@@ -17,34 +17,34 @@ using namespace std;
 int main() {
     std::cout << "Hello, World!" << std::endl;
 //
-//    stereo_vision::ParamLoader paramLoader("/home/vickylzy/CLionProjects/stereo_vision/camera_info/camera_stereo_merged_1.yaml");
-    stereo_vision::ParamLoader paramLoader("/home/vickylzy/CLionProjects/stereo_vision/camera_info/camera_stereo_2.yaml");
+    stereo_vision::ParamLoader paramLoader("/home/vickylzy/CLionProjects/stereo_vision/camera_info/camera_stereo_1.yaml");
+//    stereo_vision::ParamLoader paramLoader("/home/vickylzy/CLionProjects/stereo_vision/camera_info/camera_stereo_2.yaml");
     paramLoader.show_info();
     stereo_vision::StereoConstructor stereoConstructor(paramLoader);
 
-    int block_size = 13;
-    int minDisparity = 128;
-    int numberOfDisparities = 32;
+    int block_size = 9;
+    int minDisparity = 136;
+    int numberOfDisparities = 184-136;
 
     stereoConstructor.onInit(block_size, minDisparity, numberOfDisparities);
 
 //    string img1_filename = "/home/vickylzy/Documents/space_station_arm/test_image/left_back.png";
 //    string img2_filename = "/home/vickylzy/Documents/space_station_arm/test_image/right_back.png";
-    string img1_filename = "/home/vickylzy/Pictures/20201214机械臂腕部相机（正样）力学试验后外参第二次测试/腕部301b/L1100.bmp";
-    string img2_filename = "/home/vickylzy/Pictures/20201214机械臂腕部相机（正样）力学试验后外参第二次测试/腕部301b/R1100.bmp";
+    string img1_filename = "/home/vickylzy/Documents/space_station_arm/data_once/left.jpeg";
+    string img2_filename = "/home/vickylzy/Documents/space_station_arm/data_once/right.jpeg";
 //
 //    string img1_filename = "/home/vickylzy/CLionProjects/stereo_vision/data/imgL.jpg";
 //    string img2_filename = "/home/vickylzy/CLionProjects/stereo_vision/data/imgR.jpg";
 
-//    cv::Mat im1 = cv::imread(img1_filename,cv::IMREAD_COLOR);
-//    cv::Mat im2 = cv::imread(img2_filename,cv::IMREAD_COLOR);
+    cv::Mat im1 = cv::imread(img1_filename,cv::IMREAD_COLOR);
+    cv::Mat im2 = cv::imread(img2_filename,cv::IMREAD_COLOR);
 
-    cv::Mat im1 = cv::imread(img1_filename, cv::IMREAD_GRAYSCALE);
-    cv::Mat im2 = cv::imread(img2_filename, cv::IMREAD_GRAYSCALE);
+//    cv::Mat im1 = cv::imread(img1_filename, cv::IMREAD_GRAYSCALE);
+//    cv::Mat im2 = cv::imread(img2_filename, cv::IMREAD_GRAYSCALE);
 
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloudSource(new pcl::PointCloud<pcl::PointXYZ>);// uninitialized or initialized
     stereoConstructor.compute_match(im1, im2, cloudSource);
-
+    1==1;
 
     /**
      *  registration here

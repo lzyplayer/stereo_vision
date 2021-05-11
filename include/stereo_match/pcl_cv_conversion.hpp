@@ -11,32 +11,21 @@ namespace stereo_vision {
 
 
     pcl::PointCloud<pcl::PointXYZ>::Ptr MatToPoinXYZ(const cv::Mat &OpencVPointCloud, float scale) {
-        /*
-        *  Function: Get from a Mat to pcl pointcloud datatype
-        *  In: cv::Mat
-        *  Out: pcl::PointCloud
-        */
-
-        //char pr=100, pg=100, pb=100;
+        const double max_z = 1.0e5;
         pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud_ptr(new pcl::PointCloud<pcl::PointXYZ>);//(new pcl::pointcloud<pcl::pointXYZ>);
-
-        for (int i = 0; i < OpencVPointCloud.cols; i++) {
-            //std::cout<<i<<endl;
-
-            pcl::PointXYZ point;
-            point.x = OpencVPointCloud.at<float>(0, i) * scale;
-            point.y = OpencVPointCloud.at<float>(1, i) * scale;
-            point.z = OpencVPointCloud.at<float>(2, i) * scale;
-
-            // when color needs to be added:
-            //uint32_t rgb = (static_cast<uint32_t>(pr) << 16 | static_cast<uint32_t>(pg) << 8 | static_cast<uint32_t>(pb));
-            //point.rgb = *reinterpret_cast<float*>(&rgb);
-
-            point_cloud_ptr->points.push_back(point);
-
-
+        for (int y = 0; y < OpencVPointCloud.rows; y++) {
+            for (int x = 0; x < OpencVPointCloud.cols; x++) {
+                Vec3f point = OpencVPointCloud.at<Vec3f>(y, x);
+                if (fabs(point[2]*scale - max_z) < FLT_EPSILON || fabs(point[2]) > max_z) continue;
+                if (point[2]*scale>9) continue;
+                pcl::PointXYZ point_pcl;
+                point_pcl.x = point[0] * scale;
+                point_pcl.y = point[1] * scale;
+                point_pcl.z = point[2] * scale;
+                point_cloud_ptr->points.push_back(point_pcl);
+            }
         }
-        point_cloud_ptr->width = (int) point_cloud_ptr->points.size();
+        point_cloud_ptr->width = static_cast<size_t >(point_cloud_ptr->points.size());
         point_cloud_ptr->height = 1;
 
         return point_cloud_ptr;

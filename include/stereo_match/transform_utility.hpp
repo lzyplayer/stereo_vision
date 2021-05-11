@@ -55,9 +55,9 @@ namespace stereo_vision {
         float roll = stof(params[13]);
         //check rad! or degreee!(degree default)
         Matrix3f Rot;
-        Rot = AngleAxisf(yaw / 180 * M_PI, Vector3f::UnitZ())
-              * AngleAxisf(pitch / 180 * M_PI, Vector3f::UnitY())
-              * AngleAxisf(roll / 180 * M_PI, Vector3f::UnitX());
+        Rot = AngleAxisf(yaw , Vector3f::UnitZ())
+              * AngleAxisf(pitch , Vector3f::UnitY())
+              * AngleAxisf(roll , Vector3f::UnitX());
         trans.block(0, 0, 3, 3) = Rot;
         return trans;
     }

@@ -32,20 +32,21 @@ namespace stereo_vision {
         sgbm->setSpeckleWindowSize(100);
         sgbm->setSpeckleRange(32);
         sgbm->setDisp12MaxDiff(5);
-        sgbm->setUniquenessRatio(10);
+        sgbm->setUniquenessRatio(20);
         sgbm->setMode(StereoSGBM::MODE_HH);
 //        sgbm->setMode(StereoSGBM::MODE_SGBM);
 
     }
 
-    void saveXYZ(const char *filename, const Mat &mat) {
-        const double max_z = 1.0e4;
+    void saveXYZ(const char *filename, const Mat &mat,float scale) {
+        const double max_z = 1.0e5;
         FILE *fp = fopen(filename, "wt");
         for (int y = 0; y < mat.rows; y++) {
             for (int x = 0; x < mat.cols; x++) {
                 Vec3f point = mat.at<Vec3f>(y, x);
-                if (fabs(point[2] - max_z) < FLT_EPSILON || fabs(point[2]) > max_z) continue;
-                fprintf(fp, "%f %f %f\n", point[0], point[1], point[2]);
+                if (fabs(point[2]*scale - max_z) < FLT_EPSILON || fabs(point[2]) > max_z) continue;
+                if (point[2]*scale>9) continue;
+                fprintf(fp, "%f %f %f\n", point[0]*scale, point[1]*scale, point[2]*scale);
             }
         }
         fclose(fp);
@@ -107,9 +108,10 @@ namespace stereo_vision {
 
         disp.convertTo(floatDisp, CV_32F, 1.0f / disparity_multiplier);
         reprojectImageTo3D(floatDisp, xyz, Q, true);
-        saveXYZ("cloud.xyz", xyz);
-        //  precision  milimter 2 meter
         float scale_m_mm = 1e-3;
+
+        saveXYZ("cloud.xyz", xyz,scale_m_mm);
+        //  precision  milimter 2 meter
         pc_stereovision = MatToPoinXYZ(xyz, scale_m_mm);
 
 

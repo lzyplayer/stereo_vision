@@ -12,7 +12,6 @@
 //#include <pcl/io/pcd_io.h>
 //#include <pcl/registration/icp.h>
 //#include <boost/shared_ptr.hpp>
-#include <pclomp/ndt_omp.h>
 #include <opencv2/core/utility.hpp>
 #include <opencv2/core/eigen.hpp>
 #include "stereo_match/stereo_constructor.h"
@@ -93,6 +92,9 @@ int main() {
 
         cv::Mat im1 = cv::imread(img_left_filename, cv::IMREAD_GRAYSCALE);
         cv::Mat im2 = cv::imread(img_right_filename, cv::IMREAD_GRAYSCALE);
+
+//        cv::Mat im1 = cv::imread(img_left_filename, cv::IMREAD_COLOR);
+//        cv::Mat im2 = cv::imread(img_right_filename, cv::IMREAD_COLOR);
 
         pcl::PointCloud<pcl::PointXYZ>::Ptr cloudSource(new pcl::PointCloud<pcl::PointXYZ>);// uninitialized or initialized
         stereoConstructor_ptr->compute_match(im1, im2, cloudSource);
