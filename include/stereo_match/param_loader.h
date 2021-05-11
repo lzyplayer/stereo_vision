@@ -29,7 +29,10 @@ namespace stereo_vision{
 
     private:
         std::string file_path;
-        cv::Mat ins_M_l,ins_M_r,D_l,D_r,E_Rrl,E_Trl;
+        cv::Mat ins_M_l,ins_M_r,D_l,D_r,E_Rrl,E_Trl,M_ee_lcam;
+    public:
+        const cv::Mat &getMEeLcam() const;
+        // M_ee_lcam = M_ee_pointcloud
 
     };
 }

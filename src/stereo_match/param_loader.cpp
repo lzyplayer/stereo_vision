@@ -23,13 +23,15 @@ namespace stereo_vision{
         fs["distortion_coefficients_right"]>>D_r ;
         fs["extrinsic_R_Mrl"]>>E_Rrl ;
         fs["extrinsic_T_Mrl"]>>E_Trl ;
+        fs["T_pc_Meel"]>>M_ee_lcam;
 
 
     }
 
     void ParamLoader::show_info() {
 
-        std::cout<<"ins_M_l:\n"<<ins_M_l<<"\n"<<"D_l:\n"<<D_l<<"\n"<<"ins_M_r:\n"<<ins_M_r<<"\n"<<"D_r:\n"<<D_r<<"\n"<<"E_Rrl:\n"<<E_Rrl<<"\n"<<"E_trl:\n"<<E_Trl<<std::endl;
+        std::cout<<"ins_M_l:\n"<<ins_M_l<<"\n"<<"D_l:\n"<<D_l<<"\n"<<"ins_M_r:\n"<<ins_M_r<<"\n"\
+        <<"D_r:\n"<<D_r<<"\n"<<"E_Rrl:\n"<<E_Rrl<<"\n"<<"E_trl:\n"<<E_Trl<<"\nM_ee_lcam:\n"<<M_ee_lcam<<std::endl;
     }
 
     const cv::Mat &ParamLoader::getInsML() const {
@@ -54,6 +56,10 @@ namespace stereo_vision{
 
     const cv::Mat &ParamLoader::getETrl() const {
         return E_Trl;
+    }
+
+    const cv::Mat &ParamLoader::getMEeLcam() const {
+        return M_ee_lcam;
     }
 
 

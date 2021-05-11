@@ -59,6 +59,8 @@ namespace stereo_vision {
 
         int64 t = getTickCount();
         int cn = im_l.channels(); // 3 channels
+        if(cn==3)
+            --cn;
         int sgbmWinSize = sgbm->getBlockSize();
         sgbm->setP1(8*cn*sgbmWinSize*sgbmWinSize);
         sgbm->setP2(32*cn*sgbmWinSize*sgbmWinSize);

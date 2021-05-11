@@ -15,6 +15,7 @@
 //#include <pcl/registration/icp.h>
 //#include <boost/shared_ptr.hpp>
 #include <opencv2/core/utility.hpp>
+#include <opencv2/core/eigen.hpp>
 #include "stereo_match/stereo_constructor.h"
 #include "stereo_match/param_loader.h"
 #include "station_prarm_reader.hpp"
@@ -40,12 +41,12 @@ int main() {
     tran_info::clear_pidtxt();
     tran_info::save_pidtxt();
 // init
-    stereo_vision::ParamLoader paramLoader_l("../camera_info/camera_stereo_1.yaml");
-    stereo_vision::ParamLoader paramLoader_r("../camera_info/camera_stereo_2.yaml");
-    paramLoader_l.show_info();
-    paramLoader_r.show_info();
-    stereo_vision::StereoConstructor stereoConstructor_a1(paramLoader_l);
-    stereo_vision::StereoConstructor stereoConstructor_b2(paramLoader_r);
+    stereo_vision::ParamLoader paramLoader_1("../camera_info/camera_stereo_1.yaml");
+    stereo_vision::ParamLoader paramLoader_2("../camera_info/camera_stereo_2.yaml");
+    paramLoader_1.show_info();
+    paramLoader_2.show_info();
+    stereo_vision::StereoConstructor stereoConstructor_a1(paramLoader_1);
+    stereo_vision::StereoConstructor stereoConstructor_b2(paramLoader_2);
 
     int block_size = 9;
     int minDisparity = 128;
@@ -53,7 +54,9 @@ int main() {
 
     stereoConstructor_a1.onInit(block_size, minDisparity, numberOfDisparities);
     stereoConstructor_b2.onInit(block_size, minDisparity, numberOfDisparities);
+
     stereo_vision::StereoConstructor* stereoConstructor_ptr;
+    stereo_vision::ParamLoader* paramLoader_ptr;
 
 
     // endless loop !
@@ -66,20 +69,25 @@ int main() {
         }
         // read realtime param
         std::vector<std::string> station_param = stereo_vision::getArgList(ARG_FETCH_BLOCK, tran_info::trans_dir_path, "data.txt");
-        Eigen::Matrix4f arm_trans = stereo_vision::stationParam2rot(station_param);
         // choose arm end
-        if (stoi(station_param[14]) == 85)
+        if (stoi(station_param[15]) == 85){
             // arm lock end a1, use cam b2
             stereoConstructor_ptr = &stereoConstructor_b2;
-        else if (stoi(station_param[14]) == 170)
+            paramLoader_ptr = &paramLoader_2;
+        }
+        else if (stoi(station_param[15]) == 170){
             // arm lock end b2, use cam a1
             stereoConstructor_ptr = &stereoConstructor_a1;
+            paramLoader_ptr = &paramLoader_1;
+        }
         else{
             perror("unknown arm end");
             continue;
         }
-        //  get eigen transform
-        //  TODO: calculate initial transfrom  camleft->cam_install->F_ee
+        Eigen::Matrix4f M_w_ee = stereo_vision::stationParam2rot(station_param);
+        Eigen::Matrix4f M_ee_lc = Eigen::Matrix4f::Zero();
+        cv::cv2eigen(paramLoader_ptr->getMEeLcam(),M_ee_lc);
+        Eigen::Matrix4f M_w_lc = M_w_ee * M_ee_lc;
 
         string img_left_filename(tran_info::im_cam0_path);
         string img_right_filename(tran_info::im_cam1_path);
@@ -93,7 +101,7 @@ int main() {
 
     /**
      *  registration here
-     *  init transform: compute needed
+     *  init transform: M_w_lc
      *  data pointcloud: cloudSource
      */
 

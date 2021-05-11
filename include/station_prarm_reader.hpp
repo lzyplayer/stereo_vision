@@ -53,21 +53,22 @@ namespace stereo_vision{
 
     /**
      * station_param
-     * [0]: arm joint 1 theta
-     * [1]: arm joint 2 theta
-     * [2]: arm joint 3 theta
-     * [3]: arm joint 4 theta
-     * [4]: arm joint 5 theta
-     * [5]: arm joint 6 theta
-     * [6]: arm joint 7 theta
-     * [7]: Translation x M_world_arm
-     * [8]: Translation y M_world_arm
-     * [9]: Translation z M_world_arm
-     * [10]: Rotation z M_world_arm
-     * [11]: Rotation y M_world_arm
-     * [12]: Rotation x M_world_arm
-     * [13]: base footprint ID
-     * [14]: currentEndCam "55"-1a  "AA"-2b
+     * [0]: timestamp
+     * [1]: arm joint 1 theta
+     * [2]: arm joint 2 theta
+     * [3]: arm joint 3 theta
+     * [4]: arm joint 4 theta
+     * [5]: arm joint 5 theta
+     * [6]: arm joint 6 theta
+     * [7]: arm joint 7 theta
+     * [8]: Translation x M_world_arm
+     * [9]: Translation y M_world_arm
+     * [10]: Translation z M_world_arm
+     * [11]: Rotation z M_world_arm
+     * [12]: Rotation y M_world_arm
+     * [13]: Rotation x M_world_arm
+     * [14]: base footprint ID
+     * [15]: currentEndCam "55"-1a  "AA"-2b
      */
     std::vector<std::string> getArgList(int wait,
                                         const char *pathname, const char *filename)
