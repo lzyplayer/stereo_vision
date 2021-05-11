@@ -69,9 +69,11 @@ int main() {
         Eigen::Matrix4f arm_trans = stereo_vision::stationParam2rot(station_param);
         // choose arm end
         if (stoi(station_param[14]) == 85)
-            stereoConstructor_ptr = &stereoConstructor_a1;
-        else if (stoi(station_param[14]) == 170)
+            // arm lock end a1, use cam b2
             stereoConstructor_ptr = &stereoConstructor_b2;
+        else if (stoi(station_param[14]) == 170)
+            // arm lock end b2, use cam a1
+            stereoConstructor_ptr = &stereoConstructor_a1;
         else{
             perror("unknown arm end");
             continue;
