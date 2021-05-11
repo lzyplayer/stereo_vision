@@ -18,9 +18,14 @@ namespace stereo_vision {
 
     class Register {
     public:
-        Register(const std::string &pcd_file_path, float leafSize = 0.04f);
+        explicit Register(const std::string &pcd_file_path, float leafSize = 0.04f);
 
-        int compute(const pcl::PointCloud<pcl::PointXYZ>::Ptr &pc_stereovision, Eigen::Matrix4f &init_motion, Eigen::Matrix4f &result_motion);
+        int compute(const pcl::PointCloud<pcl::PointXYZ>::Ptr &pc_stereovision,
+                    Eigen::Matrix4f &init_motion,
+                    Eigen::Matrix4f &result_motion,
+                    pcl::PointCloud<pcl::PointXYZ>::Ptr &pc_source_down,
+                    pcl::PointCloud<pcl::PointXYZ>::Ptr &pc_trans_source_down,
+                    pcl::PointCloud<pcl::PointXYZ>::Ptr &pc_local_down);
 
     private:
         float leaf_size ;
