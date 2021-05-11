@@ -10,7 +10,4 @@
 #include <pcl/registration/icp.h>
 
 
-
-
-
 #endif //INCLUDE_STEREO_MATCH_ICP_REGISTRATION_HPP

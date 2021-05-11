@@ -9,10 +9,11 @@
 #include <opencv2/core/utility.hpp>
 
 
-namespace stereo_vision{
-    class ParamLoader{
+namespace stereo_vision {
+    class ParamLoader {
     public:
         explicit ParamLoader(const std::string &filePath);
+
         void show_info();
 
         const cv::Mat &getInsML() const;
@@ -29,7 +30,7 @@ namespace stereo_vision{
 
     private:
         std::string file_path;
-        cv::Mat ins_M_l,ins_M_r,D_l,D_r,E_Rrl,E_Trl,M_ee_lcam;
+        cv::Mat ins_M_l, ins_M_r, D_l, D_r, E_Rrl, E_Trl, M_ee_lcam;
     public:
         const cv::Mat &getMEeLcam() const;
         // M_ee_lcam = M_ee_pointcloud

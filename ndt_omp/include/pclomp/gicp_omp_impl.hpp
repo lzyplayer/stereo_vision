@@ -62,7 +62,7 @@ pclomp::GeneralizedIterativeClosestPoint<PointSource, PointTarget>::computeCovar
         const typename pcl::search::KdTree<PointT>::ConstPtr kdtree,
         MatricesVector &cloud_covariances) {
     if (k_correspondences_ > int(cloud->size())) {
-        PCL_ERROR (
+        PCL_ERROR(
                 "[pclomp::GeneralizedIterativeClosestPoint::computeCovariances] Number or points in cloud (%lu) is less than k_correspondences_ (%lu)!\n",
                 cloud->size(), k_correspondences_);
         return;
@@ -117,7 +117,7 @@ pclomp::GeneralizedIterativeClosestPoint<PointSource, PointTarget>::computeCovar
             }
 
         // Compute the SVD (covariance matrix is symmetric so U = V')
-        Eigen::JacobiSVD<Eigen::Matrix3d> svd(cov, Eigen::ComputeFullU);
+        Eigen::JacobiSVD <Eigen::Matrix3d> svd(cov, Eigen::ComputeFullU);
         cov.setZero();
         Eigen::Matrix3d U = svd.matrixU();
         // Reconstitute the covariance matrix with modified singular values using the column     // vectors in V.
@@ -222,7 +222,7 @@ pclomp::GeneralizedIterativeClosestPoint<PointSource, PointTarget>::estimateRigi
     // Optimize using forward-difference approximation LM
     const double gradient_tol = 1e-2;
     OptimizationFunctorWithIndices functor(this);
-    BFGS<OptimizationFunctorWithIndices> bfgs(functor);
+    BFGS <OptimizationFunctorWithIndices> bfgs(functor);
     bfgs.parameters.sigma = 0.01;
     bfgs.parameters.rho = 0.01;
     bfgs.parameters.tau1 = 9;
@@ -242,8 +242,8 @@ pclomp::GeneralizedIterativeClosestPoint<PointSource, PointTarget>::estimateRigi
         result = bfgs.testGradient(gradient_tol);
     } while (result == BFGSSpace::Running && inner_iterations_ < max_inner_iterations_);
     if (result == BFGSSpace::NoProgress || result == BFGSSpace::Success || inner_iterations_ == max_inner_iterations_) {
-        PCL_DEBUG ("[pcl::registration::TransformationEstimationBFGS::estimateRigidTransformation]");
-        PCL_DEBUG ("BFGS solver finished with exit code %i \n", result);
+        PCL_DEBUG("[pcl::registration::TransformationEstimationBFGS::estimateRigidTransformation]");
+        PCL_DEBUG("BFGS solver finished with exit code %i \n", result);
         transformation_matrix.setIdentity();
         applyState(transformation_matrix, x);
     } else PCL_THROW_EXCEPTION(pcl::SolverDidntConvergeException,
@@ -292,8 +292,10 @@ pclomp::GeneralizedIterativeClosestPoint<PointSource, PointTarget>::Optimization
     Eigen::Matrix4f transformation_matrix = gicp_->base_transformation_;
     gicp_->applyState(transformation_matrix, x);
     //Eigen::Vector3d g_t = g.head<3> ();
-    std::vector<Eigen::Matrix4d, Eigen::aligned_allocator<Eigen::Matrix4d>> R_array(omp_get_max_threads());
-    std::vector<Eigen::Vector4d, Eigen::aligned_allocator<Eigen::Vector4d>> g_array(omp_get_max_threads());
+    std::vector<Eigen::Matrix4d, Eigen::aligned_allocator < Eigen::Matrix4d>>
+    R_array(omp_get_max_threads());
+    std::vector<Eigen::Vector4d, Eigen::aligned_allocator < Eigen::Vector4d>>
+    g_array(omp_get_max_threads());
 
     for (int i = 0; i < R_array.size(); i++) {
         R_array[i].setZero();
@@ -436,7 +438,7 @@ pclomp::GeneralizedIterativeClosestPoint<PointSource, PointTarget>::computeTrans
             query.getVector4fMap() = transformation_ * query.getVector4fMap();
 
             if (!searchForNeighbors(query, nn_indices, nn_dists)) {
-                PCL_ERROR (
+                PCL_ERROR(
                         "[pcl::%s::computeTransformation] Unable to find a nearest neighbor in the target dataset for point %d in the source!\n",
                         getClassName().c_str(), (*indices_)[i]);
                 continue;
@@ -483,7 +485,7 @@ pclomp::GeneralizedIterativeClosestPoint<PointSource, PointTarget>::computeTrans
             }
         }
         catch (pcl::PCLException &e) {
-            PCL_DEBUG ("[pcl::%s::computeTransformation] Optimization issue %s\n", getClassName().c_str(), e.what());
+            PCL_DEBUG("[pcl::%s::computeTransformation] Optimization issue %s\n", getClassName().c_str(), e.what());
             break;
         }
         nr_iterations_++;
@@ -491,12 +493,12 @@ pclomp::GeneralizedIterativeClosestPoint<PointSource, PointTarget>::computeTrans
         if (nr_iterations_ >= max_iterations_ || delta < 1) {
             converged_ = true;
             previous_transformation_ = transformation_;
-            PCL_DEBUG (
+            PCL_DEBUG(
                     "[pcl::%s::computeTransformation] Convergence reached. Number of iterations: %d out of %d. Transformation difference: %f\n",
                     getClassName().c_str(), nr_iterations_, max_iterations_,
                     (transformation_ - previous_transformation_).array().abs().sum());
         } else
-            PCL_DEBUG ("[pcl::%s::computeTransformation] Convergence failed\n", getClassName().c_str());
+            PCL_DEBUG("[pcl::%s::computeTransformation] Convergence failed\n", getClassName().c_str());
     }
     //for some reason the static equivalent methode raises an error
     // final_transformation_.block<3,3> (0,0) = (transformation_.block<3,3> (0,0)) * (guess.block<3,3> (0,0));

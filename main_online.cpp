@@ -103,7 +103,7 @@ int main() {
          *  data pointcloud: cloudSource
          */
         Eigen::Matrix4f result_motion;
-        pc_register.compute(cloudSource,M_w_lc,result_motion);
+        pc_register.compute(cloudSource, M_w_lc, result_motion);
         /***
          *  registration end here
          */

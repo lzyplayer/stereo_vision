@@ -14,15 +14,14 @@
 #define CHK_FILE_KEYWORD "+-fin-+"
 #define ARG_LIST_LEN_MAX 8192
 
-namespace stereo_vision{
+namespace stereo_vision {
 
     static char *checkFile(const char *pathname,
-                           const char *filename, int wait)
-    {
+                           const char *filename, int wait) {
         FILE *f;
         char filepath[FILENAME_MAX];
         char *chk;
-        char *buf = (char*)calloc(ARG_LIST_LEN_MAX, 1);
+        char *buf = (char *) calloc(ARG_LIST_LEN_MAX, 1);
         sprintf(filepath, "%s/%s", pathname, filename);
         CHK_FILE_LABEL:
         while (true) {
@@ -71,8 +70,7 @@ namespace stereo_vision{
      * [15]: currentEndCam "55"-1a  "AA"-2b
      */
     std::vector<std::string> getArgList(int wait,
-                                        const char *pathname, const char *filename)
-    {
+                                        const char *pathname, const char *filename) {
         std::string file;
         std::vector<std::string> ret;
         char *s, *csr, *findch;
@@ -91,10 +89,10 @@ namespace stereo_vision{
         free(s);
         //remove file after read
         std::string combined_name = std::string(pathname) + filename;
-        if( remove( combined_name.c_str() ) != 0 )
-            perror( "Error deleting file" );
+        if (remove(combined_name.c_str()) != 0)
+            perror("Error deleting file");
         else
-            puts( "File successfully deleted" );
+            puts("File successfully deleted");
         //
         return ret;
     }
@@ -111,8 +109,6 @@ namespace stereo_vision{
 //    }
 
 }
-
-
 
 
 #endif //INCLUDE_STEREO_MATCH_STATION_PRARM_READER_HPP

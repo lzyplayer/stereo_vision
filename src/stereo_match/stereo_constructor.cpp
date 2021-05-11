@@ -12,17 +12,15 @@ namespace stereo_vision {
 
     StereoConstructor::StereoConstructor(ParamLoader param) : param(std::move(param)) {}
 
-    void StereoConstructor::onInit(int SADWindowSize ,int minDisparity ,int numberOfDisparities) {
+    void StereoConstructor::onInit(int SADWindowSize, int minDisparity, int numberOfDisparities) {
 
-        sgbm = StereoSGBM::create(0,16,3);
+        sgbm = StereoSGBM::create(0, 16, 3);
 
-        if ( numberOfDisparities < 1 || numberOfDisparities % 16 != 0 )
-        {
+        if (numberOfDisparities < 1 || numberOfDisparities % 16 != 0) {
             printf(" The max disparity (--maxdisparity=<...>) must be a positive integer divisible by 16\n");
             throw;
         }
-        if (SADWindowSize < 1 || SADWindowSize % 2 != 1)
-        {
+        if (SADWindowSize < 1 || SADWindowSize % 2 != 1) {
             printf(" parameter error: The block size (--blocksize=<...>) must be a positive odd number\n");
             throw;
         }
@@ -40,37 +38,35 @@ namespace stereo_vision {
 
     }
 
-    void saveXYZ(const char* filename, const Mat& mat)
-    {
+    void saveXYZ(const char *filename, const Mat &mat) {
         const double max_z = 1.0e4;
-        FILE* fp = fopen(filename, "wt");
-        for(int y = 0; y < mat.rows; y++)
-        {
-            for(int x = 0; x < mat.cols; x++)
-            {
+        FILE *fp = fopen(filename, "wt");
+        for (int y = 0; y < mat.rows; y++) {
+            for (int x = 0; x < mat.cols; x++) {
                 Vec3f point = mat.at<Vec3f>(y, x);
-                if(fabs(point[2] - max_z) < FLT_EPSILON || fabs(point[2]) > max_z) continue;
+                if (fabs(point[2] - max_z) < FLT_EPSILON || fabs(point[2]) > max_z) continue;
                 fprintf(fp, "%f %f %f\n", point[0], point[1], point[2]);
             }
         }
         fclose(fp);
     }
-    int StereoConstructor::compute_match(const Mat &im_l, const Mat &im_r ,pcl::PointCloud<pcl::PointXYZ>::Ptr& pc_stereovision) {
+
+    int StereoConstructor::compute_match(const Mat &im_l, const Mat &im_r, pcl::PointCloud<pcl::PointXYZ>::Ptr &pc_stereovision) {
 
         int64 t = getTickCount();
         int cn = im_l.channels(); // 3 channels
-        if(cn==3)
+        if (cn == 3)
             --cn;
         int sgbmWinSize = sgbm->getBlockSize();
-        sgbm->setP1(8*cn*sgbmWinSize*sgbmWinSize);
-        sgbm->setP2(32*cn*sgbmWinSize*sgbmWinSize);
+        sgbm->setP1(8 * cn * sgbmWinSize * sgbmWinSize);
+        sgbm->setP2(32 * cn * sgbmWinSize * sgbmWinSize);
 
         Size img_size = im_l.size();
         Rect roi1, roi2;
         Mat Q;
         Mat R1, P1, R2, P2;
         // stereo im rectify
-        stereoRectify( param.getInsML(), param.getDL(), param.getInsMR(), param.getDR(), img_size, param.getERrl(), param.getETrl(), R1, R2, P1, P2, Q, CALIB_ZERO_DISPARITY, 0, img_size, &roi1, &roi2 );
+        stereoRectify(param.getInsML(), param.getDL(), param.getInsMR(), param.getDR(), img_size, param.getERrl(), param.getETrl(), R1, R2, P1, P2, Q, CALIB_ZERO_DISPARITY, 0, img_size, &roi1, &roi2);
 
         Mat map11, map12, map21, map22;
         initUndistortRectifyMap(param.getInsML(), param.getDL(), R1, P1, img_size, CV_16SC2, map11, map12);
@@ -92,7 +88,7 @@ namespace stereo_vision {
 
 //
         t = getTickCount() - t;
-        printf("Time elapsed: %fms\n", t*1000/getTickFrequency());
+        printf("Time elapsed: %fms\n", t * 1000 / getTickFrequency());
 
         Mat normalized_im;
 #if  (CV_MAJOR_VERSION == 4)
@@ -100,7 +96,7 @@ namespace stereo_vision {
 #else
         normalize(disp, normalized_im, 0, 255, CV_MINMAX, CV_8UC1);
 #endif
-        imwrite("disparity_im.png",  normalized_im );
+        imwrite("disparity_im.png", normalized_im);
 
         //save pointcloud
         Mat xyz;
@@ -114,12 +110,11 @@ namespace stereo_vision {
         saveXYZ("cloud.xyz", xyz);
         //  precision  milimter 2 meter
         float scale_m_mm = 1e-3;
-        pc_stereovision = MatToPoinXYZ(xyz,scale_m_mm);
+        pc_stereovision = MatToPoinXYZ(xyz, scale_m_mm);
 
 
-    return 0;
+        return 0;
     }
-
 
 
 }

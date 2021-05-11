@@ -15,17 +15,17 @@
 #include "param_loader.h"
 
 
-
 namespace stereo_vision {
-
 
 
     using namespace cv;
 
     class StereoConstructor {
     public:
-        void onInit(int SADWindowSize = 13,int minDisparity = 96,int numberOfDisparities = 48);
-        int compute_match(const Mat& im_l,const Mat& im_r,pcl::PointCloud<pcl::PointXYZ>::Ptr& pc_stereovision);
+        void onInit(int SADWindowSize = 13, int minDisparity = 96, int numberOfDisparities = 48);
+
+        int compute_match(const Mat &im_l, const Mat &im_r, pcl::PointCloud<pcl::PointXYZ>::Ptr &pc_stereovision);
+
         explicit StereoConstructor(ParamLoader param);
 
     private:

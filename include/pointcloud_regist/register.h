@@ -13,20 +13,19 @@
 #include <pcl/io/pcd_io.h>
 
 
-
-namespace stereo_vision{
+namespace stereo_vision {
 
 
     class Register {
     public:
         explicit Register(const std::string &pcd_file_path);
 
-        int compute(const pcl::PointCloud<pcl::PointXYZ>::Ptr& pc_stereovision,Eigen::Matrix4f &init_motion,Eigen::Matrix4f &result_motion);
+        int compute(const pcl::PointCloud<pcl::PointXYZ>::Ptr &pc_stereovision, Eigen::Matrix4f &init_motion, Eigen::Matrix4f &result_motion);
 
     private:
-        float leaf_size = 0.04f;
-        float TransformationEpsilon = 0.01f;
-        float ndtResolution = 1.0f;
+        const float leaf_size = 0.04f;
+        const float TransformationEpsilon = 0.01f;
+        const float ndtResolution = 1.0f;
         pcl::PointCloud<pcl::PointXYZ>::Ptr localmap_cloud;
         pcl::VoxelGrid<pcl::PointXYZ> voxelGrid;
         pcl::Registration<pcl::PointXYZ, pcl::PointXYZ>::Ptr registration_ptr;
@@ -34,9 +33,7 @@ namespace stereo_vision{
     };
 
 
-
 }
-
 
 
 #endif //SRC_REGISTRATION_REGISTER_H

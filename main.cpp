@@ -26,7 +26,7 @@ int main() {
     int minDisparity = 128;
     int numberOfDisparities = 32;
 
-    stereoConstructor.onInit(block_size,minDisparity,numberOfDisparities);
+    stereoConstructor.onInit(block_size, minDisparity, numberOfDisparities);
 
 //    string img1_filename = "/home/vickylzy/Documents/space_station_arm/test_image/left_back.png";
 //    string img2_filename = "/home/vickylzy/Documents/space_station_arm/test_image/right_back.png";
@@ -39,11 +39,11 @@ int main() {
 //    cv::Mat im1 = cv::imread(img1_filename,cv::IMREAD_COLOR);
 //    cv::Mat im2 = cv::imread(img2_filename,cv::IMREAD_COLOR);
 
-    cv::Mat im1 = cv::imread(img1_filename,cv::IMREAD_GRAYSCALE);
-    cv::Mat im2 = cv::imread(img2_filename,cv::IMREAD_GRAYSCALE);
+    cv::Mat im1 = cv::imread(img1_filename, cv::IMREAD_GRAYSCALE);
+    cv::Mat im2 = cv::imread(img2_filename, cv::IMREAD_GRAYSCALE);
 
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloudSource(new pcl::PointCloud<pcl::PointXYZ>);// uninitialized or initialized
-    stereoConstructor.compute_match(im1,im2,cloudSource);
+    stereoConstructor.compute_match(im1, im2, cloudSource);
 
 
     /**

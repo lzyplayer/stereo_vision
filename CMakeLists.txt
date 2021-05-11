@@ -5,7 +5,7 @@ add_compile_options(-std=c++14 -msse -msse2 -msse3 -msse4 -msse4.1 -msse4.2)
 
 set(CMAKE_CXX_STANDARD 14)
 
-find_package(OpenCV  REQUIRED)
+find_package(OpenCV REQUIRED)
 find_package(PCL REQUIRED)
 find_package(OpenMP)
 if (OPENMP_FOUND)
@@ -21,7 +21,7 @@ include_directories(
         ${EIGEN_INCLUDE_PATH}
         include
         ndt_omp/include
-        )
+)
 link_directories(${PCL_LIBRARY_DIRS})
 add_definitions(${PCL_DEFINITIONS})
 
