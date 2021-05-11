@@ -10,10 +10,9 @@
 #include <pcl/point_types.h>
 //#include <pcl/visualization/cloud_viewer.h>
 //#include <pcl/io/pcd_io.h>
-//#include <pcl/filters/filter.h>
-//#include <pcl/filters/voxel_grid.h>
 //#include <pcl/registration/icp.h>
 //#include <boost/shared_ptr.hpp>
+#include <pclomp/ndt_omp.h>
 #include <opencv2/core/utility.hpp>
 #include <opencv2/core/eigen.hpp>
 #include "stereo_match/stereo_constructor.h"
@@ -21,6 +20,7 @@
 #include "station_prarm_reader.hpp"
 #include "stereo_match/transform_utility.hpp"
 #include "stereo_match/transfer_info.hpp"
+#include "pointcloud_regist/register.h"
 
 using namespace std;
 
@@ -36,8 +36,8 @@ namespace {
 int main() {
     //camera signal declare
 
-    std::signal(SIGRTMIN+1, [](int s) { camera_l_signal = s; });
-    std::signal(SIGRTMIN+2, [](int s) { camera_r_signal = s; });
+    std::signal(SIGRTMIN + 1, [](int s) { camera_l_signal = s; });
+    std::signal(SIGRTMIN + 2, [](int s) { camera_r_signal = s; });
     tran_info::clear_pidtxt();
     tran_info::save_pidtxt();
 // init
@@ -54,39 +54,38 @@ int main() {
 
     stereoConstructor_a1.onInit(block_size, minDisparity, numberOfDisparities);
     stereoConstructor_b2.onInit(block_size, minDisparity, numberOfDisparities);
-
-    stereo_vision::StereoConstructor* stereoConstructor_ptr;
-    stereo_vision::ParamLoader* paramLoader_ptr;
+    stereo_vision::Register pc_register("CLOUD_PATH");
+    stereo_vision::StereoConstructor *stereoConstructor_ptr;
+    stereo_vision::ParamLoader *paramLoader_ptr;
 
 
     // endless loop !
-    while (true){
+    while (true) {
         // TODO: tell backend what image you need
         tran_info::write_reqlist();
-        while (!camera_l_signal | !camera_r_signal){
+        while (!camera_l_signal | !camera_r_signal) {
             // wait image arrived
             std::this_thread::sleep_for(std::chrono::milliseconds(10));
         }
         // read realtime param
         std::vector<std::string> station_param = stereo_vision::getArgList(ARG_FETCH_BLOCK, tran_info::trans_dir_path, "data.txt");
         // choose arm end
-        if (stoi(station_param[15]) == 85){
+        if (stoi(station_param[15]) == 85) {
             // arm lock end a1, use cam b2
             stereoConstructor_ptr = &stereoConstructor_b2;
             paramLoader_ptr = &paramLoader_2;
-        }
-        else if (stoi(station_param[15]) == 170){
+        } else if (stoi(station_param[15]) == 170) {
             // arm lock end b2, use cam a1
             stereoConstructor_ptr = &stereoConstructor_a1;
             paramLoader_ptr = &paramLoader_1;
-        }
-        else{
+        } else {
             perror("unknown arm end");
             continue;
         }
         Eigen::Matrix4f M_w_ee = stereo_vision::stationParam2rot(station_param);
         Eigen::Matrix4f M_ee_lc = Eigen::Matrix4f::Zero();
-        cv::cv2eigen(paramLoader_ptr->getMEeLcam(),M_ee_lc);
+        // TODO: check!!warning!: double cvmat 2 eigen float matrix
+        cv::cv2eigen(paramLoader_ptr->getMEeLcam(), M_ee_lc);
         Eigen::Matrix4f M_w_lc = M_w_ee * M_ee_lc;
 
         string img_left_filename(tran_info::im_cam0_path);
@@ -97,66 +96,21 @@ int main() {
 
         pcl::PointCloud<pcl::PointXYZ>::Ptr cloudSource(new pcl::PointCloud<pcl::PointXYZ>);// uninitialized or initialized
         stereoConstructor_ptr->compute_match(im1, im2, cloudSource);
+
+        /**
+         *  registration here
+         *  init transform: M_w_lc
+         *  data pointcloud: cloudSource
+         */
+        Eigen::Matrix4f result_motion;
+        pc_register.compute(cloudSource,M_w_lc,result_motion);
+        /***
+         *  registration end here
+         */
+
     }
 
-    /**
-     *  registration here
-     *  init transform: M_w_lc
-     *  data pointcloud: cloudSource
-     */
 
-//    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudRef(new pcl::PointCloud<pcl::PointXYZ>);
-////    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudSource(new pcl::PointCloud<pcl::PointXYZ>);
-//    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudRef_filtered(new pcl::PointCloud<pcl::PointXYZ>);
-//    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudSource_filtered(new pcl::PointCloud<pcl::PointXYZ>);
-//
-//
-//    pcl::io::loadPCDFile("/home/shaoyi/ICP/pt1_single.pcd", *cloudRef);
-////    pcl::io::loadPCDFile("/home/shaoyi/ICP/pt2_single.pcd", *cloudSource);
-//    Eigen::Matrix4f m_InitTF;
-//    m_InitTF.setIdentity();
-//    m_InitTF << 1, 0, 0, 0,
-//            0, 1, 0, 0,
-//            0, 0, 1, 0,
-//            0, 0, 0, 1;
-//
-//    pcl::VoxelGrid<pcl::PointXYZ> sor;
-//    sor.setInputCloud(cloudRef);
-//    sor.setLeafSize(100.0f, 100.0f, 100.0f);
-//    sor.filter(*cloudRef_filtered);
-//
-//    sor.setInputCloud(cloudSource);
-//    sor.setLeafSize(100.0f, 100.0f, 100.0f);
-//    sor.filter(*cloudSource_filtered);
-//
-//    pcl::IterativeClosestPoint<pcl::PointXYZ, pcl::PointXYZ> icp;
-//    icp.setInputSource(cloudSource_filtered);
-//    icp.setInputTarget(cloudRef_filtered);
-//
-//    pcl::PointCloud<pcl::PointXYZ> ptcloud_transformed;
-//    icp.align(ptcloud_transformed, m_InitTF);
-//
-//    //pcl::visualization::CloudViewer viewer("Cloud Viewer");
-//
-//    pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> target_color(cloudRef_filtered, 0, 255, 0);
-//    pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> final_color(ptcloud_transformed.makeShared(), 255, 0, 0);
-//
-//
-//    boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer(new pcl::visualization::PCLVisualizer("3D Viewer"));
-//    viewer->addPointCloud(cloudRef_filtered, target_color, "cloud1");
-//    viewer->addPointCloud(ptcloud_transformed.makeShared(), final_color, "cloud2");
-//
-//    std::cout << icp.getFinalTransformation() << std::endl;
-//
-//    while (!viewer->wasStopped())
-//    {
-//        viewer->spinOnce(100);
-//        usleep(100000);
-////        boost::this_thread::sleep(boost::posix_time::microseconds(100000));
-//    }
-/***
- *  registration end here
- */
 //  processing online
 //    {
 //        while (1){
